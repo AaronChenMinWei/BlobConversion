@@ -1,0 +1,48 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@model Blob
+
+<div class="text-center">
+    <div><span>File Size (byte):</span>@Model.SizeInByte</div>
+    <div><span>File Size (kb):</span>@(Model.SizeInByte / 1024)</div>
+    <object data="@(Url.Action("PdfBlob"))" type="application/pdf">
+        <iframe src="@(Url.Action("PdfBlob"))"></iframe>
+    </object>
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <p><button id="button">Share Blob!</button></p>
+    <p class="result"></p>
+</div>
+
+<script>
+    // Demo start
+    const btn = document.querySelector("#button");
+    const resultPara = document.querySelector(".result");
+
+    // Share must be triggered by "user activation"
+    btn.addEventListener("click", async () => {
+      try {
+        const blob = await fetch('@Url.Action("PdfBlob")')
+            .then(response => response.blob());
+        //var url = URL.createObjectURL(blob);
+        //var a = document.createElement("a");
+        //a.href = url;
+        //a.download = "NewBlob.pdf";
+        //document.body.appendChild(a);
+        //a.click();
+        //setTimeout(function() {
+        //    document.body.removeChild(a);
+        //    window.URL.revokeObjectURL(url);  
+        //}, 0); 
+
+        await navigator.share(blob);
+        resultPara.textContent = "Shared successfully";
+      } catch (err) {
+        resultPara.textContent = `Error: ${err}`;
+      }
+    });
+</script>
