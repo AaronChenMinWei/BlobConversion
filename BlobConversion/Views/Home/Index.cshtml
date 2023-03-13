@@ -7,7 +7,6 @@
     <div><span>File Size (byte):</span>@Model.SizeInByte</div>
     <div><span>File Size (kb):</span>@(Model.SizeInByte / 1024)</div>
     <object data="@(Url.Action("PdfBlob"))" type="application/pdf">
-        <iframe src="@(Url.Action("PdfBlob"))"></iframe>
     </object>
     <br />
     <br />
@@ -38,8 +37,12 @@
         //    document.body.removeChild(a);
         //    window.URL.revokeObjectURL(url);  
         //}, 0); 
-
-        await navigator.share(blob);
+        const data = {
+          files: [new File([blob], "newPdfBlob.pdf", { type: blob.type })],
+          title: "newPdfBlob.pdf",
+          text: "new 1!"
+        };
+        await navigator.share(data);
         resultPara.textContent = "Shared successfully";
       } catch (err) {
         resultPara.textContent = `Error: ${err}`;
